@@ -11,6 +11,10 @@ namespace FileManagementAPI.Controllers
     {
         FileSearcher fileSearcher = new FileSearcher();
         FileHelper fileHelper = new FileHelper();
+        public FileHelper FileHelper;
+
+        public FileSearcher FileSearcher { get; set; }
+
         [HttpGet("[action]")]
         public IActionResult SearchFilesByFileName(string fileName)
         {
