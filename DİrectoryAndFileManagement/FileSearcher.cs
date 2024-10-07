@@ -18,7 +18,7 @@ namespace DİrectoryAndFileManagement
             {
                 try
                 {
-                    var files = SearchDirectory("C://", predicate);
+                    var files = SearchDirectory(drive.Name, predicate);
                     lock (result)
                     {
                         result.AddRange(files);
@@ -62,6 +62,11 @@ namespace DİrectoryAndFileManagement
             }
             catch (UnauthorizedAccessException) { /* Üst dizine erişim izni olmayabilir */ }
             catch (PathTooLongException) { /* Üst dizin yolu çok uzun olabilir */ }
+
+            if (result.Count > 0)
+            {
+                var a = result;
+           }
 
             return result;
         }
