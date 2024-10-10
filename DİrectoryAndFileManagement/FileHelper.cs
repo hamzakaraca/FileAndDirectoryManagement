@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace DİrectoryAndFileManagement
 {
-    public class FileHelper
+    public class FileHelper:IFileHelper
     {
         public async Task<PaginatedResult<string>> GetAllFilesAsync(string startDirectory, int pageNumber = 1, int pageSize = 10)
         {

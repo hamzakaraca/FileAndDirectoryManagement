@@ -1,23 +1,43 @@
-ï»¿using NUnit.Framework;
+
+using NUnit.Framework;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using FileManagementAPI.Controllers;
-using DÄ°rectoryAndFileManagement;
+using DÝrectoryAndFileManagement;
 
-namespace FileManagementAPITests
+
+namespace FileManagementTests
+//{
+//    public class Tests
+//    {
+//        [SetUp]
+//        public void Setup()
+//        {
+//        }
+
+//        [Test]
+//        public void Test1()
+//        {
+//            Assert.Pass();
+//        }
+//    }
+//}
+
+
+//namespace FileManagementAPITests
 {
     [TestFixture]
     public class FileControllerTests
     {
         private Mock<FileSearcher> _mockFileSearcher;
-        private Mock<FileHelper> _mockFileHelper;
+        private Mock<IFileHelper> _mockFileHelper;
         private FileController _controller;
 
         [SetUp]
         public void Setup()
         {
             _mockFileSearcher = new Mock<FileSearcher>();
-            _mockFileHelper = new Mock<FileHelper>();
+            _mockFileHelper = new Mock<IFileHelper>();
             _controller = new FileController
             {
                 FileSearcher = _mockFileSearcher.Object,
@@ -28,8 +48,8 @@ namespace FileManagementAPITests
         public void SearchFilesByFileName_ShouldReturnOk_WhenFilesFound()
         {
             // Arrange
-            string fileName = "example.txt";
-            var expectedFiles = new List<string> { "example.txt" };
+            string fileName = "hello.txt";
+            var expectedFiles = new List<string> { "hello.txt" };
             _mockFileSearcher.Setup(fs => fs.SearchByFileName(fileName)).Returns(expectedFiles);
 
             // Act
@@ -37,8 +57,8 @@ namespace FileManagementAPITests
 
             // Assert
             var okResult = result as OkObjectResult;
-            Assert.That(okResult, Is.Not.Null);  // null olup olmadÄ±ÄŸÄ±nÄ± test et
-            Assert.That(okResult.Value, Is.EqualTo(expectedFiles));  // EÅŸitliÄŸi test et
+            Assert.That(okResult, Is.Not.Null);  // null olup olmadýðýný test et
+            Assert.That(okResult.Value, Is.EqualTo(expectedFiles));  // Eþitliði test et
         }
 
 
@@ -46,8 +66,8 @@ namespace FileManagementAPITests
         //public void SearchFilesByFileName_ShouldReturnOk_WhenFilesFound()
         //{
         //    // Arrange
-        //    string fileName = "example.txt";
-        //    var expectedFiles = new List<string> { "example.txt" };
+        //    string fileName = "hello.txt";
+        //    var expectedFiles = new List<string> { "hello.txt" };
         //    _mockFileSearcher.Setup(fs => fs.SearchByFileName(fileName)).Returns(expectedFiles);
 
         //    // Act
@@ -55,32 +75,32 @@ namespace FileManagementAPITests
 
         //    // Assert
         //    var okResult = result as OkObjectResult;
-        //    Assert.IsNotNull(okResult);
-        //    Assert.AreEqual(expectedFiles, okResult.Value);
+        //    Assert.That(okResult, Is.Not.Null); // OkObjectResult'ýn null olmadýðýný kontrol et
+        //    Assert.That(okResult.Value, Is.EqualTo(expectedFiles)); // OkResult'ýn içindeki deðerin expectedFiles'a eþit olduðunu kontrol
         //}
 
         [Test]
         public void SearchFilesByFileName_ShouldReturnBadRequest_WhenNoFilesFound()
         {
             // Arrange
-            string fileName = "notfound.txt";
+            string fileName = "hello.txt";
             _mockFileSearcher.Setup(fs => fs.SearchByFileName(fileName)).Returns((List<string>)null);
 
             // Act
             var result = _controller.SearchFilesByFileName(fileName);
 
             var badRequestResult = result as BadRequestResult;
-            Assert.That(badRequestResult, Is.Not.Null); // BadRequestResult dÃ¶ndÃ¼ÄŸÃ¼nÃ¼ kontrol eder
+            Assert.That(badRequestResult, Is.Not.Null); // BadRequestResult döndüðünü kontrol eder
 
             // Assert
-            
+
         }
 
         [Test]
         public void GetFileCreationTime_ShouldReturnOk_WhenFileExists()
         {
             // Arrange
-            string filePath = "path/to/file.txt";
+            string filePath = "C://Test/hello.txt";
             var expectedTime = DateTime.Now;
             _mockFileHelper.Setup(fh => fh.GetFileCreationTime(filePath)).Returns(expectedTime);
 
@@ -89,7 +109,7 @@ namespace FileManagementAPITests
 
             // Assert
             var okResult = result as OkObjectResult;
-            Assert.That(okResult,Is.Not.Null);
+            Assert.That(okResult, Is.Not.Null);
             Assert.That(expectedTime, Is.EqualTo(okResult.Value));
         }
 
@@ -97,16 +117,18 @@ namespace FileManagementAPITests
         public void CopyFile_ShouldReturnOk_WhenCopySuccess()
         {
             // Arrange
-            string sourcePath = "source.txt";
-            string destinationPath = "destination.txt";
-            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath)).Returns("true");
+            string sourcePath = "C:\\Test\\hello.txt";
+            string destinationPath = "C:\\hamza\\hello.txt";
+            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath))
+               .Returns("Dosya kopyalandý: " + sourcePath + " -> " + destinationPath);
+
 
             // Act
             var result = _controller.CopyFile(sourcePath, destinationPath);
 
             // Assert
             var okResult = result as OkResult;
-            Assert.That(okResult, Is.Not.Null); // OkResult dÃ¶ndÃ¼ÄŸÃ¼nÃ¼ kontrol eder
+            Assert.That(okResult, Is.Not.Null); // OkResult döndüðünü kontrol eder
 
         }
 
@@ -114,19 +136,19 @@ namespace FileManagementAPITests
         public void CopyFile_ShouldReturnBadRequest_WhenCopyFails()
         {
             // Arrange
-            string sourcePath = "source.txt";
-            string destinationPath = "destination.txt";
-            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath)).Returns(("baÅŸarÄ±sÄ±z"));
+            string sourcePath = "C:\\Test\\hello.txt";
+            string destinationPath = "C:\\hamza\\hello.txt";
+            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath)).Returns(("baþarýsýz"));
 
             // Act
             var result = _controller.CopyFile(sourcePath, destinationPath);
 
             // Assert
             var badRequestResult = result as BadRequestResult;
-            Assert.That(badRequestResult, Is.Not.Null);  // BadRequestResult dÃ¶ndÃ¼ÄŸ
+            Assert.That(badRequestResult, Is.Not.Null);  // BadRequestResult döndüð
 
         }
 
-        // DiÄŸer metotlar iÃ§in benzer testler yazabilirsiniz...
+        // Diðer metotlar için benzer testler yazabilirsiniz...
     }
 }

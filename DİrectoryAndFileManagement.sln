@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DİrectoryAndFileManagement
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileManagementAPI", "FileManagementAPI\FileManagementAPI.csproj", "{4E15220D-97A3-4EE9-9590-BB6D44656820}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileManagementAPITests", "FileManagementAPITests\FileManagementAPITests.csproj", "{7D23DC6E-50D8-4B14-961B-6A3E50F4EDAF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileManagementTests", "FileManagementTests\FileManagementTests.csproj", "{28640B36-67D8-4D75-875A-93462A9E7702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{4E15220D-97A3-4EE9-9590-BB6D44656820}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4E15220D-97A3-4EE9-9590-BB6D44656820}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4E15220D-97A3-4EE9-9590-BB6D44656820}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7D23DC6E-50D8-4B14-961B-6A3E50F4EDAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7D23DC6E-50D8-4B14-961B-6A3E50F4EDAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7D23DC6E-50D8-4B14-961B-6A3E50F4EDAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7D23DC6E-50D8-4B14-961B-6A3E50F4EDAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28640B36-67D8-4D75-875A-93462A9E7702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28640B36-67D8-4D75-875A-93462A9E7702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28640B36-67D8-4D75-875A-93462A9E7702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28640B36-67D8-4D75-875A-93462A9E7702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
