@@ -9,18 +9,22 @@ namespace FileManagementAPI.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        FileSearcher fileSearcher = new FileSearcher();
-        FileHelper fileHelper = new FileHelper();
-        public FileHelper FileHelper;
+        private readonly IFileHelper _fileHelper;
+        private readonly IFileSearcher _fileSearcher;
 
-        public FileSearcher FileSearcher { get; set; }
+        public FileController(IFileHelper fileHelper, IFileSearcher fileSearcher)
+        {
+            _fileHelper = fileHelper;
+            _fileSearcher = fileSearcher;
+        }
+
 
         [HttpGet("[action]")]
         public IActionResult SearchFilesByFileName(string fileName)
         {
-            var result = fileSearcher.SearchByFileName(fileName);
+            var result = _fileSearcher.SearchByFileName(fileName);
             
-            if (result==null)
+            if (result==null || result.Count() == 0)
             {
                 return BadRequest(result);
             }
@@ -31,7 +35,7 @@ namespace FileManagementAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult SearchFilesByFileType(string fileType)
         {
-            var result = fileSearcher.SearchByFileType(fileType);
+            var result = _fileSearcher.SearchByFileType(fileType);
             if (result ==null)
             {
                 return BadRequest(result);
@@ -43,7 +47,7 @@ namespace FileManagementAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult SearchFilesByCreationDate(string dateTime)
         {
-            var result = fileSearcher.SearchByCreationDate(dateTime);
+            var result = _fileSearcher.SearchByCreationDate(dateTime);
             if (result == null)
             {
                 return BadRequest(result);
@@ -55,7 +59,7 @@ namespace FileManagementAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult GetAllFilesAsync(string startDirectory,int pageNumber,int pageSize) 
         {
-            var result = fileHelper.GetAllFilesAsync(startDirectory,pageNumber,pageSize);
+            var result = _fileHelper.GetAllFilesAsync(startDirectory,pageNumber,pageSize);
             if (result.IsCompletedSuccessfully)
             {
                 return Ok(result);
@@ -66,15 +70,15 @@ namespace FileManagementAPI.Controllers
         [HttpGet("[action]")]
         public IActionResult GetFileCreationTime(string filePath)
         {
-            var result = fileHelper.GetFileCreationTime(filePath);
+            var result = _fileHelper.GetFileCreationTime(filePath);
             return Ok(result);
         }
 
         [HttpGet("[action]")]
         public IActionResult ReadFile(string filePath)
         {
-            var result = fileHelper.ReadFile(filePath);
-            if (result==null)
+            var result = _fileHelper.ReadFile(filePath);
+            if (result=="Dosya bulunamadı.")
             {
                 return BadRequest(result);
             }
@@ -84,7 +88,7 @@ namespace FileManagementAPI.Controllers
         [HttpPost("[action]")]
         public IActionResult CopyFile(string sourceFilePath,string destinationFilePath)
         {
-            var result = fileHelper.CopyFile(sourceFilePath,destinationFilePath);
+            var result = _fileHelper.CopyFile(sourceFilePath,destinationFilePath);
             if (result == null) 
             {
                 return BadRequest(result);
@@ -95,7 +99,7 @@ namespace FileManagementAPI.Controllers
         [HttpPost("[action]")]
         public IActionResult CreateFile(string filePath,string content)
         {
-            var result = fileHelper.CreateAndWriteFile(filePath,content);
+            var result = _fileHelper.CreateAndWriteFile(filePath,content);
             if (result == null)
             {
                 return BadRequest(result);
@@ -106,7 +110,7 @@ namespace FileManagementAPI.Controllers
         [HttpPost("[action]")]
         public IActionResult WriteFile(string filePath,string content)
         {
-            var result = fileHelper.WriteFile(filePath,content);
+            var result = _fileHelper.WriteFile(filePath,content);
             if (result == null)
             {
                 return BadRequest(result);
@@ -117,7 +121,7 @@ namespace FileManagementAPI.Controllers
         [HttpDelete("[action]")]
         public IActionResult DeleteFile(string filePath)
         {
-            var result = fileHelper.DeleteFile(filePath);
+            var result = _fileHelper.DeleteFile(filePath);
             if (result == null)
             {
                 return BadRequest(result);
@@ -128,7 +132,7 @@ namespace FileManagementAPI.Controllers
         [HttpDelete("[action]")]
         public IActionResult DeleteDirectory(string directoryPath)
         {
-            var result = fileHelper.DeleteDirectory(directoryPath);
+            var result = _fileHelper.DeleteDirectory(directoryPath);
             if (result == null)
             {
                 return BadRequest(result);

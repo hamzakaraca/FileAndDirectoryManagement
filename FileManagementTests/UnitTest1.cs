@@ -29,20 +29,17 @@ namespace FileManagementTests
     [TestFixture]
     public class FileControllerTests
     {
-        private Mock<FileSearcher> _mockFileSearcher;
+        private Mock<IFileSearcher> _mockFileSearcher;
         private Mock<IFileHelper> _mockFileHelper;
         private FileController _controller;
 
         [SetUp]
         public void Setup()
         {
-            _mockFileSearcher = new Mock<FileSearcher>();
+            _mockFileSearcher = new Mock<IFileSearcher>();
             _mockFileHelper = new Mock<IFileHelper>();
-            _controller = new FileController
-            {
-                FileSearcher = _mockFileSearcher.Object,
-                FileHelper = _mockFileHelper.Object
-            };
+
+            _controller = new FileController(_mockFileHelper.Object, _mockFileSearcher.Object);
         }
         [Test]
         public void SearchFilesByFileName_ShouldReturnOk_WhenFilesFound()
@@ -127,9 +124,9 @@ namespace FileManagementTests
             var result = _controller.CopyFile(sourcePath, destinationPath);
 
             // Assert
-            var okResult = result as OkResult;
+            var okResult = result as OkObjectResult;
             Assert.That(okResult, Is.Not.Null); // OkResult döndüðünü kontrol eder
-
+            Assert.That(okResult.Value, Is.EqualTo("Dosya kopyalandý: " + sourcePath + " -> " + destinationPath));
         }
 
         [Test]
@@ -138,15 +135,15 @@ namespace FileManagementTests
             // Arrange
             string sourcePath = "C:\\Test\\hello.txt";
             string destinationPath = "C:\\hamza\\hello.txt";
-            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath)).Returns(("baþarýsýz"));
+            _mockFileHelper.Setup(fh => fh.CopyFile(sourcePath, destinationPath)).Returns(("Dosya bulunamadý."));
 
             // Act
             var result = _controller.CopyFile(sourcePath, destinationPath);
 
             // Assert
-            var badRequestResult = result as BadRequestResult;
+            var badRequestResult = result as BadRequestObjectResult;
             Assert.That(badRequestResult, Is.Not.Null);  // BadRequestResult döndüð
-
+            Assert.That(badRequestResult.Value, Is.EqualTo("Dosya bulunamadý."));
         }
 
         // Diðer metotlar için benzer testler yazabilirsiniz...

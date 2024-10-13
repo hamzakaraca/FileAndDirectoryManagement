@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DİrectoryAndFileManagement
 {
-    public class FileSearcher
+    public class FileSearcher:IFileSearcher
     {
         // Tüm sürücülerde dosya aramak için bir yardımcı metod
         private IEnumerable<string> SearchFiles(Func<string, bool> predicate)

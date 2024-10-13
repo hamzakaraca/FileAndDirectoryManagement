@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
@@ -145,6 +146,10 @@ namespace DİrectoryAndFileManagement
 
         public string CopyFile(string sourceFilePath, string destFilePath)
         {
+            if (!File.Exists(sourceFilePath)) 
+            {
+                throw new FileNotFoundException("Dosya Bulunamadı.");
+            }
             File.Copy(sourceFilePath, destFilePath, true);
             return "Dosya kopyalandı: " + sourceFilePath + " -> " + destFilePath;
         }
