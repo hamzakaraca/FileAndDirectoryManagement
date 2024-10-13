@@ -81,14 +81,14 @@ namespace FileManagementTests
         {
             // Arrange
             string fileName = "hello.txt";
-            _mockFileSearcher.Setup(fs => fs.SearchByFileName(fileName)).Returns((List<string>)null);
+            _mockFileSearcher.Setup(fs => fs.SearchByFileName(fileName)).Returns(new List<string>());  // Boþ liste döner
 
             // Act
             var result = _controller.SearchFilesByFileName(fileName);
 
-            var badRequestResult = result as BadRequestResult;
+            var badRequestResult = result as BadRequestObjectResult;
             Assert.That(badRequestResult, Is.Not.Null); // BadRequestResult döndüðünü kontrol eder
-
+            Assert.That(badRequestResult.Value, Is.EqualTo("Dosya bulunamadý."));
             // Assert
 
         }

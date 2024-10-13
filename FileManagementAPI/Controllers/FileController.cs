@@ -24,9 +24,9 @@ namespace FileManagementAPI.Controllers
         {
             var result = _fileSearcher.SearchByFileName(fileName);
             
-            if (result==null || result.Count() == 0)
+            if (result==null || !result.Any())
             {
-                return BadRequest(result);
+                return BadRequest("Dosya bulunamadı.");
             }
             
             return Ok(result);
@@ -89,7 +89,7 @@ namespace FileManagementAPI.Controllers
         public IActionResult CopyFile(string sourceFilePath,string destinationFilePath)
         {
             var result = _fileHelper.CopyFile(sourceFilePath,destinationFilePath);
-            if (result == null) 
+            if (result == null || result.Contains("Dosya bulunamadı.")) 
             {
                 return BadRequest(result);
             }
