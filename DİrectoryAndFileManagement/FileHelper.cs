@@ -11,25 +11,13 @@ namespace DİrectoryAndFileManagement
 {
     public class FileHelper:IFileHelper
     {
-        public async Task<PaginatedResult<string>> GetAllFilesAsync(string startDirectory, int pageNumber = 1, int pageSize = 10)
+        
+
+        public async Task<List<FileNode>> GetAllFilesAsync()
         {
-            if (Directory.Exists(startDirectory))
-            {
-                try
-                {
-                    var result = await ListFilesAndDirectoriesAsync(startDirectory, 0);
-                    var paginatedResult = Paginater.Paginate(result, pageNumber, pageSize);
-                    return paginatedResult;
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-            }
-            else
-            {
-                throw new DirectoryNotFoundException("Belirtilen Dizin Bulunamadı.");
-            }
+            FileTreeGenerator generator = new FileTreeGenerator();
+            var result = generator.BuildFileTreeForDrives();
+            return result;
         }
 
         private async Task<List<string>> ListFilesAndDirectoriesAsync(string directory, int indentLevel)

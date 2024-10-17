@@ -56,15 +56,19 @@ namespace FileManagementAPI.Controllers
             return Ok(result);
         }
 
+        
+
         [HttpGet("[action]")]
-        public IActionResult GetAllFilesAsync(string startDirectory,int pageNumber,int pageSize) 
+        [ProducesResponseType(typeof(List<FileNode>), StatusCodes.Status200OK)] // Başarılı yanıt tipi
+        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Hata yanıt tipi
+        public async Task<IActionResult> GetAllFilesAsync()
         {
-            var result = _fileHelper.GetAllFilesAsync(startDirectory,pageNumber,pageSize);
-            if (result.IsCompletedSuccessfully)
+            var result = await _fileHelper.GetAllFilesAsync();
+            if (result!= null && result.Any())
             {
                 return Ok(result);
             }
-            return BadRequest(result.Exception);
+            return BadRequest("No files found.");
         }
 
         [HttpGet("[action]")]

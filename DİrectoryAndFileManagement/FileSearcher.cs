@@ -27,7 +27,12 @@ namespace DİrectoryAndFileManagement
                 catch (UnauthorizedAccessException) { /* Bazı dizinlere erişim izni olmayabilir */ }
                 catch (PathTooLongException) { /* Bazı yollar çok uzun olabilir */ }
             });
-
+            //if (result.Count<1)
+            //{
+            //    var a = "Dosya buluanamadı.";
+            //    result.Add(a);
+            //    return result;
+            //}
             return result;
         }
 

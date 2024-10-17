@@ -8,7 +8,7 @@ namespace DİrectoryAndFileManagement
 {
     public interface IFileHelper
     {
-        public Task<PaginatedResult<string>> GetAllFilesAsync(string startDirectory, int pageNumber, int pageSize);
+        
         public string CreateAndWriteFile(string filePath, string content);
         public string WriteFile(string filePath, string content);
         public string ReadFile(string filePath);
@@ -16,6 +16,8 @@ namespace DİrectoryAndFileManagement
         public string DeleteFile(string filePath);
         public DateTime GetFileCreationTime(string filePath);
         public string DeleteDirectory(string directoryPath);
+
+        public Task<List<FileNode>> GetAllFilesAsync();
 
     }
 }
