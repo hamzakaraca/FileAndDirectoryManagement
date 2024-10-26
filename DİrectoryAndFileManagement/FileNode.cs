@@ -12,5 +12,6 @@ namespace DİrectoryAndFileManagement
         public bool IsDirectory { get; set; }  // Klasör mü yoksa dosya mı
         public List<FileNode>? Children { get; set; } = new List<FileNode>(); // Alt dosya/klasörler
         public long? Size { get; set; }  // Dosya boyutu (varsa)
+        public string FilePath { get; set; }
     }
 }

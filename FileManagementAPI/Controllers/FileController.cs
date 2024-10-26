@@ -1,7 +1,9 @@
 ﻿using DİrectoryAndFileManagement;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
- 
+using System.Text;
+using System.Text.Json;
+
 
 namespace FileManagementAPI.Controllers
 {
@@ -61,15 +63,30 @@ namespace FileManagementAPI.Controllers
         [HttpGet("[action]")]
         [ProducesResponseType(typeof(List<FileNode>), StatusCodes.Status200OK)] // Başarılı yanıt tipi
         [ProducesResponseType(StatusCodes.Status400BadRequest)] // Hata yanıt tipi
-        public async Task<IActionResult> GetAllFilesAsync()
+        public async Task<IActionResult> GetFileTreeAsync()
         {
-            var result = await _fileHelper.GetAllFilesAsync();
-            if (result!= null && result.Any())
+            var fileTreeGenerator = new FileTreeGenerator();
+
+            // Dosya ağacını async olarak oluştur
+            var fileTree = await Task.Run(() => fileTreeGenerator.BuildFileTreeForDrives());
+
+            // Dosya ağacı boşsa hata döndür
+            if (fileTree == null || fileTree.Count == 0)
             {
-                return Ok(result);
+                return NotFound("Dosya ağacı bulunamadı veya erişim izni yok.");
             }
-            return BadRequest("No files found.");
+
+            // JSON olarak serileştir
+            var jsonResult = JsonSerializer.Serialize(fileTree);
+
+            // Chunking yerine Content-Length başlığını manuel olarak ayarlıyoruz
+            var byteArray = Encoding.UTF8.GetBytes(jsonResult);
+            Response.Headers.ContentLength = byteArray.Length;
+
+            // Tüm veriyi toplu olarak geri döndür
+            return new FileContentResult(byteArray, "application/json");
         }
+
 
         [HttpGet("[action]")]
         public IActionResult GetFileCreationTime(string filePath)

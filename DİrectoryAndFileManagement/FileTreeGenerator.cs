@@ -59,18 +59,21 @@ namespace DİrectoryAndFileManagement
                     {
                         Name = directoryInfo.Name,
                         IsDirectory = true,
+                        FilePath = directoryInfo.FullName, // Dizin yolunu atayın
                         Children = new List<FileNode>()
                     };
 
-                    // Alt dizinleri paralel olarak işle
                     Parallel.ForEach(directoryInfo.GetDirectories(), dir =>
                     {
                         try
                         {
                             var childNode = BuildFileTree(dir.FullName);
-                            lock (directoryNode.Children) // Thread-safe erişim
+                            if (childNode != null) // Null olmayan düğümleri ekleyin
                             {
-                                directoryNode.Children.Add(childNode);
+                                lock (directoryNode.Children)
+                                {
+                                    directoryNode.Children.Add(childNode);
+                                }
                             }
                         }
                         catch (UnauthorizedAccessException ex)
@@ -85,11 +88,12 @@ namespace DİrectoryAndFileManagement
                         {
                             Name = file.Name,
                             IsDirectory = false,
-                            Size = file.Length
+                            Size = file.Length,
+                            FilePath = file.FullName // Dosya yolunu atayın
                         });
                     }
 
-                    return directoryNode;
+                    return directoryNode.Children.Count > 0 ? directoryNode : null; // Çocuk düğümü yoksa null döndür
                 }
                 else if (File.Exists(path))
                 {
@@ -98,7 +102,8 @@ namespace DİrectoryAndFileManagement
                     {
                         Name = fileInfo.Name,
                         IsDirectory = false,
-                        Size = fileInfo.Length
+                        Size = fileInfo.Length,
+                        FilePath = fileInfo.FullName // Dosya yolunu atayın
                     };
                 }
                 else
@@ -112,5 +117,7 @@ namespace DİrectoryAndFileManagement
                 return null;
             }
         }
+
+
     }
 }
