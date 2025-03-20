@@ -1,10 +1,12 @@
-﻿using System;
+﻿using DİrectoryAndFileManagement.Business.Abstract;
+using DİrectoryAndFileManagement.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DİrectoryAndFileManagement
+namespace DİrectoryAndFileManagement.Business.Concrete
 {
     public class FileSearcher:IFileSearcher
     {
@@ -27,12 +29,12 @@ namespace DİrectoryAndFileManagement
                 catch (UnauthorizedAccessException) { /* Bazı dizinlere erişim izni olmayabilir */ }
                 catch (PathTooLongException) { /* Bazı yollar çok uzun olabilir */ }
             });
-            //if (result.Count<1)
-            //{
-            //    var a = "Dosya buluanamadı.";
-            //    result.Add(a);
-            //    return result;
-            //}
+            if (result.Count < 1)
+            {
+                var a = "Dosya buluanamadı.";
+                result.Add(a);
+                return result;
+            }
             return result;
         }
 
@@ -91,17 +93,21 @@ namespace DİrectoryAndFileManagement
         // Dosya oluşturulma tarihine göre arama
         public IEnumerable<string> SearchByCreationDate(string creationDate)
         {
-            var splittedCreationDate=creationDate.Split(" ");
-            var dateTime=DateTimeConverter.ConvertToDateTime(splittedCreationDate[0], splittedCreationDate[1]);
+            if (!DateOnly.TryParseExact(creationDate, "dd/MM/yyyy", null, System.Globalization.DateTimeStyles.None, out DateOnly parsedDate))
+            {
+                throw new FormatException("Geçersiz tarih formatı. Beklenen format: dd/MM/yyyy");
+            }
+
             return SearchFiles(file =>
             {
                 try
                 {
                     var fileInfo = new FileInfo(file);
-                    return fileInfo.CreationTime.Hour == dateTime.Hour && fileInfo.CreationTime.Second==dateTime.Second && fileInfo.CreationTime.Minute==dateTime.Minute && fileInfo.CreationTime.Date == dateTime.Date;
+                    return DateOnly.FromDateTime(fileInfo.CreationTime) == parsedDate;
                 }
                 catch (FileNotFoundException) { return false; }
             });
         }
+
     }
 }

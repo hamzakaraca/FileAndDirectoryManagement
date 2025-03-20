@@ -3,7 +3,7 @@ using NUnit.Framework;
 using Moq;
 using Microsoft.AspNetCore.Mvc;
 using FileManagementAPI.Controllers;
-using DÝrectoryAndFileManagement;
+using DÝrectoryAndFileManagement.Business.Abstract;
 
 
 namespace FileManagementTests

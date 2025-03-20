@@ -1,4 +1,5 @@
-﻿using DİrectoryAndFileManagement;
+﻿using DİrectoryAndFileManagement.Business.Abstract;
+using DİrectoryAndFileManagement.Entites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -43,13 +44,13 @@ namespace FileManagementAPI.Controllers
                 return BadRequest(result);
 
             }
-            return BadRequest(result);
+            return Ok(result);
         }
 
         [HttpGet("[action]")]
-        public IActionResult SearchFilesByCreationDate(string dateTime)
+        public IActionResult SearchFilesByCreationDate(string creationDate)
         {
-            var result = _fileSearcher.SearchByCreationDate(dateTime);
+            var result = _fileSearcher.SearchByCreationDate(creationDate);
             if (result == null)
             {
                 return BadRequest(result);
@@ -58,35 +59,27 @@ namespace FileManagementAPI.Controllers
             return Ok(result);
         }
 
-        
 
-        [HttpGet("[action]")]
-        [ProducesResponseType(typeof(List<FileNode>), StatusCodes.Status200OK)] // Başarılı yanıt tipi
-        [ProducesResponseType(StatusCodes.Status400BadRequest)] // Hata yanıt tipi
-        public async Task<IActionResult> GetFileTreeAsync()
+        // Kök dizinleri alır
+        [HttpGet("root")]
+        public ActionResult<List<FileNode>> GetRootDrives()
         {
-            var fileTreeGenerator = new FileTreeGenerator();
-
-            // Dosya ağacını async olarak oluştur
-            var fileTree = await Task.Run(() => fileTreeGenerator.BuildFileTreeForDrives());
-
-            // Dosya ağacı boşsa hata döndür
-            if (fileTree == null || fileTree.Count == 0)
-            {
-                return NotFound("Dosya ağacı bulunamadı veya erişim izni yok.");
-            }
-
-            // JSON olarak serileştir
-            var jsonResult = JsonSerializer.Serialize(fileTree);
-
-            // Chunking yerine Content-Length başlığını manuel olarak ayarlıyoruz
-            var byteArray = Encoding.UTF8.GetBytes(jsonResult);
-            Response.Headers.ContentLength = byteArray.Length;
-
-            // Tüm veriyi toplu olarak geri döndür
-            return new FileContentResult(byteArray, "application/json");
+            
+            var rootDrives = _fileHelper.GetRootDrives();
+            return Ok(rootDrives);
         }
 
+        [HttpGet("[action]")]
+        public IActionResult LoadChildren(string path)
+        {
+            var result = _fileHelper.LoadChildren(path);
+            if (result == null)
+            {
+                return BadRequest(result);
+
+            }
+            return Ok(result);
+        }
 
         [HttpGet("[action]")]
         public IActionResult GetFileCreationTime(string filePath)
@@ -118,9 +111,9 @@ namespace FileManagementAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult CreateFile(string filePath,string content)
+        public IActionResult CreateFile(string filePath)
         {
-            var result = _fileHelper.CreateAndWriteFile(filePath,content);
+            var result = _fileHelper.CreateFile(filePath);
             if (result == null)
             {
                 return BadRequest(result);
@@ -160,5 +153,7 @@ namespace FileManagementAPI.Controllers
             }
             return Ok(result);
         }
+
+        
     }
 }

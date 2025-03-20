@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DİrectoryAndFileManagement
+namespace DİrectoryAndFileManagement.Helpers
 {
     public static class Paginater
     {
