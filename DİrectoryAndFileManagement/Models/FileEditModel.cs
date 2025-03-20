@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DİrectoryAndFileManagement.Models
 {
-    public class FileCreateModel
+    public class FileEditModel
     {
         public string FilePath { get; set; }
         public string Content { get; set; }

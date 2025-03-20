@@ -1,5 +1,6 @@
 ﻿using DİrectoryAndFileManagement.Business.Abstract;
 using DİrectoryAndFileManagement.Entites;
+using DİrectoryAndFileManagement.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
@@ -122,9 +123,9 @@ namespace FileManagementAPI.Controllers
         }
 
         [HttpPost("[action]")]
-        public IActionResult WriteFile(string filePath,string content)
+        public IActionResult WriteFile(FileEditModel fileEditModel)
         {
-            var result = _fileHelper.WriteFile(filePath,content);
+            var result = _fileHelper.WriteFile(fileEditModel.FilePath,fileEditModel.Content);
             if (result == null)
             {
                 return BadRequest(result);
